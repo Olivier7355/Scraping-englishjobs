@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 pageNumber = 1
 
-while (pageNumber < 2) :
+while (pageNumber < 40) :
     if (pageNumber == 1) : 
         URL = "https://englishjobs.es/in/barcelona?q=python"
     else :
@@ -19,10 +19,12 @@ while (pageNumber < 2) :
     for job in results :
 
         position = job.find(class_="title").text.strip()
-        if 'Python' in position :
+        content = job.find('p').text.replace('\n', '')
+
+        if ('Python' in position) or ('Python' in content) :
             link = 'https://englishjobs.es/' + job.find('a', class_="js-joblink joblink js-external")["href"]
             company = job.find('li').text
-            content = job.find('p').text.replace('\n', '')
+            
 
             publish = job.find('li').next_sibling.next_sibling.next_sibling.next_sibling.text
             publish = '2023 ' + publish
@@ -36,5 +38,13 @@ while (pageNumber < 2) :
                 print(content.strip())
                 print(publishingDate)
                 print('--------------------------------------------------')
+
+                with open('scraping.txt', 'a') as f:
+                    f.write(position +'\n')
+                    f.write(link +'\n')
+                    f.write(company +'\n')
+                    f.write(content.strip() +'\n')
+                    f.write(str(publishingDate) +'\n')
+                    f.write('--------------------------------------------------' +'\n')
             
     pageNumber += 1
